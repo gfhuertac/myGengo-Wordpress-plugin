@@ -1,0 +1,141 @@
+MyGengo plugin for Wordpress – User guide
+
+Tested with wordpress 3.0.4
+
+Installation
+
+- To install myGengo for wordpress, go to the administration of your blog, and open the ‘Plugins’ section. Then click on the ‘Add New’ button and on the ‘Upload’button. 
+- Once on that page, click ‘Choose File’ and select the file containing the myGengo plugin (mygengo-1.0.zip in our case). Then add the plugin by clicking the ‘Add’ button.
+- Once the plugin is uploaded you can select to Activate it immedialty. If you choose to do so, click on the ‘Activate plugin’ link.
+- If everything goes fine, you will see a message saying that the plugin was activated and you are ready to use it.
+
+Initializing the plugin
+
+Before using the myGengo plugin, you need to add the keys to use it. You can get keys for the plugin at http://mygengo.com
+
+There are two options for adding the keys on this plugin. Each used can add her own set of keys, or the  administrator can add a public set of keys that can be used by any contributor of the blog. If you choose the former, we need to add the keys in the ‘MyGengo’ section of the administration page, specifically in the ‘Personal Settings’ page. There are several options on this page:
+- Primary language mean the primary language for the current user.
+- API and Private keys are the set of keys for myGengo
+- The acknowledgement section is used to add text at the end of translated texts, IF published using the interface.
+For all the options to work, you need to enter your keys first and then save the settings.
+
+After you enter and save your keys, you will see two new elements:
+- A section with the details of the account (balance, credits spent)
+- A button to retrieve and sync the languages from the mygengo servers. You can press this button to retrieve the available languages and then choose one as your default language.
+
+This is all you need to do as a user. Now, let’s see the administrator’s interface. 
+
+The interface is quite similar, but there are a couple sections that are of interest:
+- You can create a user under whom the translations will be published.
+- You can also serve translation based on users’ browser language. This is a beta feature and it is not recommended to use so far, since it blocks the content in other languages.
+- You can allow other users to use the public keys defined in this section
+
+Adding a translation job
+
+There are several ways to add a new translation job from the contents in the blog.
+You can add a new translation of a post , page or comment by clicking in the ‘Written in’ column located on their listings, or you can click on the ‘Translate’ button located at the ‘MyGengo’ meta box at the post, page and comment edition, or you can simply click on the ‘Add new job’ link at the MyGengo section in the administration.
+
+If you choose the latter, you can select a post or page, and assign it to the current job, by using the toolbar at the top of the Order Information.
+
+After you add content to your order and selected the source and target languages and the tier, a ‘Get quote’ button will appear. You have to click it to get a quote and check if your credits are enough to pay the job.
+
+If you have enough credits, a button ‘Order & pay now’ will appear and you can pay for your job. If credits are not enough, a button with a link to the myGengo site will appear, so the user can add more credits to her account.
+
+If everything goes OK, you will be redirected to the jobs page. This page contains a list of all the jobs posted by a user. 
+
+You can click on the ID of each job to check its status. This page displays the original text and language, and previews of translation and current translations and target language, if available. According to the status there are different actions you can perform:
+- If the status is ‘available’, then it can be canceled by the user.
+- If it is pending, then there is nothing to do but wait for a translation to review.
+- When the status is ‘reviewable’ the user can approve, reject o request comments to a translation. More on this next.
+- Finally, if the status is approved you can publish the translation. More on this next.
+Besides, regardless of the status (except if the job is canceled or approved), you can add comments to this translation using the box located at the bottom.
+After every change, the user will be take back to the jobs’ list.
+
+When the status of the job is ‘reviewable’, the user can approve the translation and add feedback for myGengo and for the translator. She also can reject the translation by clicking the ‘Reject’ button or request modifications by clicking the ‘Request Corrections’ button. In the latter cases, a new layer with the form to fill will appear. The user then must fill-up this form and submit the content.
+
+Publishing a job
+
+If a job was approved by the user, he can choose to leave the job in the DB only, or to publish it as some content in the blog. If he chooses the latter, this plugin provides the user with options on the right-hand side of the job preview page.
+There are 2 default options:
+- Publish as a new post
+- Publish as a new page
+As their name indicates, these two actions take the content of a job, and create a new post or page with it. After the new content is created, the user is redirected to the new content page.
+
+The  default behavior can be extended by the user by creating new TextSources.
+A TextSource is a class that contains some methods that allow us to create new contents based on the job content. Moreover, these sources are the ones that parse the existing content to be in the form of a job.
+The MyGengo plugin defined three main TextSources:
+PostTextSource (and PageTextSource): to manage the content from post and pages
+CommentTextSource: to mange comments
+DummyTextSource: to manage any other content
+
+Each source defines a post_type, used to describe the content it can parse and create. The predefined types are ‘post’, ‘page’, ‘comment’. You can use any other type, and it will be handled by the dummy text source.
+
+In general terms, these classes implementes the following functions:
+	function accept($post_type): that returns true if the source can handle the content type
+	function retrieveFormElements(): used to display the assignation form at the order page
+	function getAssignedTo(): that retrieves a label and hidden fields for the current assignment
+	function getTextToTranslate($requestvars): the text to be included in the job
+	function getPrimaryLanguage(): the source language of the job
+	function getWordcount($unit): deprecated
+	function retrievePublishableAs($jobid): the new content that can be created with this source
+	function publishAs($jobid, $requestvars): to handle the publication
+
+Once they are created, they can be added to the current sources by calling the mygengo_registerTS method, which just receives the name of the class to instantiate as a parameter.
+More details on how to add new sources will be added soon. In the meantime, the user can refer to the mygengo-textsources.php file for more details on implementation.
+
+UI elements
+
+This plugin contains son widget, short codes and functions to be used at the user interface.
+
+Widgets
+
+Go to Appearance > Widgets in the left sidebar of your Dashboard.  Drag the two "Translations" widgets to your sidebar and click "Save Changes".
+
+Short codes
+
+The easiest way to integrate myGengo to your site is by adding short codes to your posts/pages or anything you want. Short codes not only allows you to display current translation for ANY section of your site, but also allows you to translate the same section. 
+
+There are two types of short codes: 
+1. **mygengo_st** that shows the translation to the element you desired 
+2. **mygengo_t4e** that allows you to add a translation to textarea 
+
+The former sort code can be used with any text inside a 'div' tag. This short code insert code that displays the available translations of the content inside the div, and allow users to order more translations. You only need to add something similar to the following short code next to your element: 
+
+[mygengo_st post_type="post" post_id="0" element_id="" include_text="0"]
+
+The arguments post_type and post_id allows the system to process properly the content. If you use one of the predefined types – post, page, comment – then if the user requests a translation, the system will read the content from the database. If the post_type is a custom one, then the user should set the include_text to 1. The combination of the post_type and post_id uniquely defines a job  and therefore should be used carefully. 
+The element_id argument refers to the div that contains the text to be translated.
+
+For example, if a user wants to display the content of a post in several languages, but does not want to publish the new translations, he can perform the following steps:
+Inside the original post, the user must add the short code, setting the id to the post id. Since this is part of the post and not the complete post, set the type to ‘post-content’ or any other not predefined name.
+Also, the content to be translated must be wrapped inside a div. This div should be identified with a unique id. This is will be the element_id argument.
+
+Then, at the post page, if the user clicks on the ‘Add a translation’ link located where she placed the short code, it will be taken to the new job page, with the content of the div. The user must follow the flow showed in section 3 to approve the job. After the job is approved, if the user goes back to the post page a flag with the translation should appear.
+
+If the user clicks on the flag, the translation content will replace the original content.
+
+This is very easy to do, but some users may prefer to add php code at the templates, to avoid writing the post id hardcoded at the post content. To do this, you have to include the following code in the Single Post file of the theme:
+
+<div><?php if(function_exists('mygengo_translations_viewer')) {mygengo_translations_viewer($id, ‘post-type’, ‘element_id’, ‘1’);} ?></div>
+
+The second short code is used to add text to text areas. It is useful for replying comments in different languages. It works in a similar way to the previous short code, but:
+The element MUST be a text area
+The argument ‘include_text’ is not used
+
+Functions for displaying translations
+
+You can also add links to translations (based on translatemyblog code): 
+
+To display translation links under the title of the post (where they'll be more visible to users), go to Appearance > Editor, edit your Main Index Template (tipically index.php or loop.php) and insert 
+
+<div><?php if(function_exists('mygengo_display_translations')) {mygengo_display_translations($id);} ?></div>
+
+before the line <div class="entry"> or after the post title. 
+
+To display links back to the original post on the translation page (along with links to translations in other languages) edit your Single Post (single.php) template and insert 
+
+<div><?php if(function_exists('mygengo_display_translations')) {mygengo_display_translations($id);} ?></div> 
+<div><?php if(function_exists('mygengo_display_parent_link')) {mygengo_display_parent_link($id);} ?></div>
+
+before the line <div class="entry"> or after the post title.
+
