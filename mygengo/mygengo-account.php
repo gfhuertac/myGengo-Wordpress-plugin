@@ -83,7 +83,7 @@ function processBalance() {
 }
 
 window.onload = function() {
-	var fn = function() { getBalance(2, processBalance); }
+	var fn = function() { getBalance(0, processBalance); }
 	setTimeout(fn, 100);
 }
 
