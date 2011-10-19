@@ -178,18 +178,39 @@ window.onload = function() {
 		</td>
 	</tr>
 
-
+	<?php if($mg_api_key) { ?>
 	<tr>
 		<td><?php _e('API Key'); ?></td>
 		<td><input type="text" name="mg_api_key" style="width:400px;" value="<?php echo $mg_api_key; ?>" />
 		</td>
 	</tr>
-
 	<tr>
 		<td><?php _e('Private Key'); ?></td>
 		<td><input type="text" name="mg_private_key" style="width:400px;" value="<?php echo $mg_private_key; ?>" />
 		</td>
 	</tr>
+	<?php } else { ?>
+	<tr>
+		<td></td>
+		<td>
+			<input type="hidden" name="mg_api_key" id="mg_api_key">
+			<input type="hidden" name="mg_private_key" id="mg_private_key">
+			<div id="signin_with_mygengo"></div>
+		</td>
+	</tr>
+	<script type="text/javascript" src="http://ogneg.com/js/passport.min.js"></script>
+	<script type="text/javascript">
+		var passport = new MyGengoPassport({
+			appName: 'myGengo-WordPress',
+			button: 'signin_with_mygengo',
+			buttonStyle: 'largeBlue',
+			on_authentication: function(data) {
+				document.getElementById('mg_api_key').value = data.public_key;
+				document.getElementById('mg_private_key').value = data.private_key;
+			}
+		});
+	</script>
+	<?php } ?>
 
 	<tr>
 		<td><?php _e('Base Url'); ?></td>
