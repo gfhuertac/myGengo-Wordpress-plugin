@@ -114,7 +114,7 @@ window.onload = function() {
 		<input type="hidden" name="sync_languages" value="true" />
 	</form>
 	<h3><?php _e('General Settings'); ?></h3>
-	<form method="post" action="">
+	<form id="settings_form" method="post" action="">
 <?php
 	if(get_option("mygengo_translator_active") == "") {
 		global $current_user;
@@ -205,8 +205,10 @@ window.onload = function() {
 			button: 'signin_with_mygengo',
 			buttonStyle: 'largeBlue',
 			on_authentication: function(data) {
+				document.getElementById('signin_with_mygengo').style.display = 'none';
 				document.getElementById('mg_api_key').value = data.public_key;
 				document.getElementById('mg_private_key').value = data.private_key;
+				document.getElementById('settings_form').submit();
 			}
 		});
 	</script>
