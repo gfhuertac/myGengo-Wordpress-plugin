@@ -28,7 +28,7 @@ class myGengo_Client
     {
         $this->config = myGengo_Config::getInstance();
         $config = array('maxredirects' => 5,
-                        'useragent' => 'phpMyGengo 1.0',
+                        'useragent' => 'myGengo plugin for Wordpress; Version phpMyGengo 1.0; http://gonzalo.huerta.cl/;',
                         'timeout' => 10,
                         'keepalive' => false);
         $this->client = new Zend_Http_Client(null, $config);
